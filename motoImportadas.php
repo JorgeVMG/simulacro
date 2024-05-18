@@ -27,11 +27,14 @@ class MotoImportada extends Moto{
         return $cad;
     }
     public function darPrecioVenta(){
-        $precioFinal = parent::darPrecioVenta();
-        if($precioFinal != -1){
-            $precioFinal = $precioFinal + $this->getImpuesto();
+        $precio = parent:: darPrecioVenta();
+        $precioVenta = 0;
+        if ($precio != -1){
+            $precioVenta = $precio + $this->getImpuesto();
+        }else{
+            $precioVenta = $precio;
         }
-        return $precioFinal;
+        return $precioVenta;
     }
     
 }

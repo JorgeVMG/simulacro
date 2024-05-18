@@ -52,7 +52,7 @@ class Moto{
         "\nDescripcion: ".$this->getDescripcion()."\nPorcentaje Anual: ".$this->getPorcentajeAnual()."\nActiva: ".$this->getActiva();
     }
     public function darPrecioVenta(){
-        if($this->getActiva()==true){
+        if($this->getActiva()){
             $anio = 2024 - $this->getAnioFabricacion();
             $venta = $this->getCosto() + ($this->getCosto()*($anio*$this->getPorcentajeAnual()));
             $this->setActiva(false);

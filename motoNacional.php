@@ -18,10 +18,13 @@ class MotoNacionales extends Moto{
         return $cad;
     }
     public function darPrecioVenta(){
-        $precioFinal = parent:: darPrecioVenta();
-        if ($precioFinal != -1){
-            $precioFinal = $precioFinal - (($precioFinal*$this->getPorcentajeDescuento())/100);
+        $precio = parent:: darPrecioVenta();
+        $precioVenta = 0;
+        if ($precio != -1){
+            $precioVenta = $precio - (($precio*$this->getPorcentajeDescuento())/100);
+        }else{
+            $precioVenta = $precio;
         }
-        return $precioFinal;
+        return $precioVenta;
     }
 }

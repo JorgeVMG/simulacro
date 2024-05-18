@@ -53,11 +53,12 @@ class Venta{
     }
     public function retornarTotalVentaNacional(){
         $precioColecMotosNacional =0;
-        if(count($this->getReferenciaCliente())>0){
+        if(count($this->getReferenciaColcMotos())>0){
             foreach($this->getReferenciaColcMotos() as $objMoto){
                 if($objMoto->getTipo()=="nacional"){
-                    if($objMoto->darPrecioVenta()!=-1){
-                        $precioColecMotosNacional += $objMoto->darPrecioVenta();
+                    $impor = $objMoto->darPrecioVenta();
+                    if($impor != -1){
+                        $precioColecMotosNacional += $impor;
                     }
                 }
             }
@@ -65,17 +66,18 @@ class Venta{
         return $precioColecMotosNacional;
     }
     public function retornarTotalVentaImportadas(){
-        $precioColecMotosImportadas =0;
+        $colecMotosImportadas = [];
         if(count($this->getReferenciaColcMotos())>0){
             foreach($this->getReferenciaColcMotos() as $objMoto){
                 if($objMoto->getTipo()=="Importada"){
-                    if($objMoto->darPrecioVenta()!=-1){
-                        $precioColecMotosImportadas += $objMoto->darPrecioVenta();
+                    if($objMoto->darPrecioVenta() != -1){
+                        $i = count($colecMotosImportadas);
+                        $colecMotosImportadas[$i]=$objMoto;
                     }
                 }
             }
         }
-        return $precioColecMotosImportadas;
+        return $colecMotosImportadas;
     }
     public function incorporarMoto($objMoto){
         $venta = $objMoto->darPrecioVenta();
