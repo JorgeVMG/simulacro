@@ -49,13 +49,12 @@ class Moto{
     }
     public function __toString(){
         return "Codigo de Moto: ".$this->getCodigo()."\nCosto: ".$this->getCosto()."\nAño de fabricacion: ".$this->getAnioFabricacion().
-        "\nDescripcion: ".$this->getDescripcion()."\nPorcentaje Anual: ".$this->getPorcentajeAnual()."\nActiva: ".$this->getActiva();
+        "\nDescripcion: ".$this->getDescripcion()."\nPorcentaje Anual: ".$this->getPorcentajeAnual()."\nActiva: ".$this->getActiva()."\nTipo Moto: ".$this->getTipo();
     }
     public function darPrecioVenta(){
         if($this->getActiva()){
             $anio = 2024 - $this->getAnioFabricacion();
             $venta = $this->getCosto() + ($this->getCosto()*($anio*$this->getPorcentajeAnual()));
-            $this->setActiva(false);
         }else{
             $venta = -1;
         }

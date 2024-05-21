@@ -39,96 +39,99 @@ class Empresa{
     public function setColeccionVentasRealizadas($colcVent){
         $this->colecVentasRealizadas=$colcVent;
     }
-
-    public function __toString(){
-        $inf="Nombre de la Empres: ".$this->getDenominacion()."\nDireccion: ".$this->getDireccion().
-        "\n**************************************************\nClientes:\n";
-        for($i=0;$i<count($this->getColeccionClientes());$i++){
-            $inf.= "Cliente ".($i+1).":\n".$this->getColeccionClientes()[$i].
-            "\n**************************************************\n";
-        }
-        $inf .= "Motos: \n";
-        for($j=0;$j<count($this->getColeccionMotos());$j++){
-            $inf.= "Moto ".($j+1).":\n".$this->getColeccionMotos()[$j].
-            "\n**************************************************\n";
-        }
-        $inf .= "Ventas: \n";
-        for($k=0;$k<count($this->getColeccionVentasRealizadas());$k++){
-            $inf.= "Venta".($k+1)."\n".$this->getColeccionVentasRealizadas()[$k].
+    public function retornarClientes(){
+        $inf = "";
+        foreach($this->getColeccionClientes() as $i => $cliente){
+            $inf.= "Cliente ".($i+1).":\n". $cliente.
             "\n**************************************************\n";
         }
         return $inf;
+    }
+    public function retornarMotos(){
+        $inf = "";
+        foreach($this->getColeccionMotos() as $i => $moto){
+            $inf.= "Moto ".($i+1).":\n".$moto.
+            "\n**************************************************\n";
+        }
+        return $inf;
+    }
+    public function retornarVentas(){
+        $inf = "";
+        foreach($this->getColeccionVentasRealizadas() as $i => $ventaRealiza){
+            $inf.= "Venta ".($i+1)."\n".$ventaRealiza.
+            "\n**************************************************\n";
+        }
+        return $inf;
+    }
+    public function __toString(){
+        $cad="**************************************************\n";
+        $cad .="Nombre de la Empres: ".$this->getDenominacion()."\nDireccion: ".$this->getDireccion().
+        "\n**************************************************\nClientes:\n".$this->retornarClientes().
+        "Motos: \n".$this->retornarMotos()."Ventas Realizadas: \n".$this->retornarVentas();
+        return $cad;
     }
     /**Implementar el método retornarMoto($codigoMoto) que recorre la colección de motos de la Empresa y
      * retorna la referencia al objeto moto cuyo código coincide con el recibido por parámetro. */
     public function retornarMoto($codigoMoto){
         $colcMotos=$this->getColeccionMotos();
-        $encontrado = false;
+        $encontrado = null;
         $i=0;
-        while ($i < count($colcMotos) && !$encontrado) {
+        while ($i < count($colcMotos) && $encontrado==null) {
             $j = $colcMotos[$i]->getCodigo();
             if ($j == $codigoMoto) {
                 $encontrado = $colcMotos[$i];
-            } else {
-                $i++;
             }
+            $i++;
         }
         return $encontrado;
-    }
-    /**6. Implementar el método registrarVenta($colCodigosMoto, $objCliente) método que recibe por
-     * parámetro una colección de códigos de motos, la cual es recorrida, y por cada elemento de la colección
-     * se busca el objeto moto correspondiente al código y se incorpora a la colección de motos de la instancia
-     * Venta que debe ser creada. Recordar que no todos los clientes ni todas las motos, están disponibles
-     * para registrar una venta en un momento determinado.
-     * El método debe setear los variables instancias de venta que corresponda y retornar el importe final de la venta. */
+    }    
     public function registrarVenta($colCodigosMoto, $objCliente){
-        $importeFinal=0;
         $colecVen = $this->getColeccionVentasRealizadas();
-        $colecMoto = [];
-        $numV = 1;
+        $importeFinal = 0;
+        $colcMotos = [];
+        $numV = count($this->getColeccionVentasRealizadas())+1;
         $fech = "23-05-24";
         $precF = 0;
-        if (is_array($colCodigosMoto)){
-            // Verificar si el cliente está habilitado para realizar la compra
-            if ($objCliente->getEstado() == true) {
-                foreach ($colCodigosMoto as $codigo) {
-                    $encon = $this->retornarMoto($codigo);
-                    $venta = new Venta($numV, $fech, $objCliente, $colecMoto, $precF);
-                    if ($encon != false) {
-                        if($venta->incorporarMoto($encon)){
-                            $numV ++;
-                            $colecVen[count($colecVen)]=$venta;
-                            $importeFinal += $venta->getPrecioFinal();
+        $respuesta = false;
+        $objVenta = new Venta($numV, $fech, $objCliente, $colcMotos, $precF);
+            if (count($colCodigosMoto)>0){
+                if ($objCliente->getEstado()==true){ 
+                    foreach($colCodigosMoto as $codigoMoto){
+                        $encontrado = $this->retornarMoto($codigoMoto);
+                        if($encontrado!=null){
+                            $moto = $objVenta->incorporarMoto($encontrado);
+                            if($moto>0){
+                                $respuesta = true;
+                                $importeFinal += $moto;
+                            }
                         }
-                    }
                 }
-            }
-        }else{
-            if ($objCliente->getEstado() == true) {
-                    $encon = $this->retornarMoto($colCodigosMoto);
-                    $venta = new Venta($numV, $fech, $objCliente, $colecMoto, $precF);
-                    if ($encon != false) {
-                        if($venta->incorporarMoto($encon)){
-                            $colecVen[count($colecVen)]=$venta;
-                            $importeFinal += $venta->getPrecioFinal();
-                        }
-                    }
+                if($respuesta == true){
+                    $i = count($colecVen);
+                    $colecVen[$i] = $objVenta;
+                    $this->setColeccionVentasRealizadas($colecVen);
+                    $objVenta->setPrecioFinal($importeFinal);
+                }
+                
             }
         }
-        $this->setColeccionVentasRealizadas($colecVen);
         return $importeFinal;
     }
-    /**7. Implementar el método retornarVentasXCliente($tipo,$numDoc) que recibe por parámetro el tipo y
-     * número de documento de un Cliente y retorna una colección con las ventas realizadas al cliente.*/
-    public function retornarVentasXCliente($tipo,$numDoc){
-        $colcVenCln=[];
-        $ventReal=$this->getColeccionVentasRealizadas();
-        foreach($ventReal as $venta){
-            $cliente=$venta->getReferenciaCliente();
-            if($cliente->getTipo()==$tipo&&$cliente->getNumeroDocumento()==$numDoc){
-                $colcVenCln[count($colcVenCln)]=$venta;
+    public function  informarSumaVentasNacionales(){
+        $precioVentasRealizadas=0;
+        foreach($this->getColeccionVentasRealizadas() as $venta){
+            $precioVentasRealizadas += $venta->retornarTotalVentaNacional();
+        }
+        return $precioVentasRealizadas;
+    }
+    public function retornarMotosImportadas(){
+        $colecMotosImportadas = [];
+        foreach ($this->getColeccionVentasRealizadas() as $venta){
+            if(count($venta->retornarTotalVentaImportadas())>0){
+                $i = count($colecMotosImportadas);
+                $colecMotosImportadas[$i] = $venta->retornarTotalVentaImportadas();
             }
         }
-        return $colcVenCln;
+        return $colecMotosImportadas;
     }
 }

@@ -23,7 +23,7 @@ class MotoImportada extends Moto{
     }
     public function __toString(){
         $cad = parent::__toString();
-        $cad.= "Pais de Importacion: ".$this->getPais()."\nImpuesto Pais: ".$this->getImpuesto();
+        $cad.= "\nPais de Importacion: ".$this->getPais()."\nImpuesto Pais: ".$this->getImpuesto();
         return $cad;
     }
     public function darPrecioVenta(){

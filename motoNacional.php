@@ -14,7 +14,7 @@ class MotoNacionales extends Moto{
     }
     public function __toString(){
         $cad = parent:: __toString();
-        $cad .= "Porcentaje de Descuento: ".$this->getPorcentajeDescuento()."%\n";
+        $cad .= "\nPorcentaje de Descuento: ".$this->getPorcentajeDescuento()."%\n";
         return $cad;
     }
     public function darPrecioVenta(){

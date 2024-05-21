@@ -56,10 +56,9 @@ class Venta{
         if(count($this->getReferenciaColcMotos())>0){
             foreach($this->getReferenciaColcMotos() as $objMoto){
                 if($objMoto->getTipo()=="nacional"){
-                    $impor = $objMoto->darPrecioVenta();
-                    if($impor != -1){
-                        $precioColecMotosNacional += $impor;
-                    }
+                    $objMoto->setActiva(true);//reactivamos la moto para que el metodo darPrecioVenta() funcione correctame
+                    $precioColecMotosNacional += $objMoto->darPrecioVenta();
+                    $objMoto->setActiva(false);//ya que la moto ya fue comprada la volvemos a desactivar para que no se reutilice
                 }
             }
         }
@@ -70,10 +69,8 @@ class Venta{
         if(count($this->getReferenciaColcMotos())>0){
             foreach($this->getReferenciaColcMotos() as $objMoto){
                 if($objMoto->getTipo()=="Importada"){
-                    if($objMoto->darPrecioVenta() != -1){
-                        $i = count($colecMotosImportadas);
-                        $colecMotosImportadas[$i]=$objMoto;
-                    }
+                    $i = count($colecMotosImportadas);
+                    $colecMotosImportadas[$i]=$objMoto;
                 }
             }
         }
@@ -83,13 +80,15 @@ class Venta{
         $venta = $objMoto->darPrecioVenta();
         $nuevaCol = $this->getReferenciaColcMotos();
         if($venta!=-1){
-            $np = count($this->getReferenciaColcMotos());
-            $nuevaCol[$np]= $objMoto;
+            $i = count($this->getReferenciaColcMotos());
+            $nuevaCol[$i]= $objMoto;
+            $precioF = $venta + $this->getPrecioFinal();
             $this->setReferenciaColcMotos($nuevaCol);
-            $this->setPrecioFinal($venta);
-            $resp = true;
+            $this->setPrecioFinal($precioF);
+            $resp = $venta;
+            $objMoto->setActiva(false);
         }else{
-            $resp = false;
+            $resp = -1;
         }
         return $resp;
     }
