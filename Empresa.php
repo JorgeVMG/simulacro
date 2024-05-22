@@ -87,49 +87,46 @@ class Empresa{
     }    
     public function registrarVenta($colCodigosMoto, $objCliente){
         $colecVen = $this->getColeccionVentasRealizadas();
-        $importeFinal = 0;
         $colcMotos = [];
         $numV = count($this->getColeccionVentasRealizadas())+1;
         $fech = "23-05-24";
         $precF = 0;
         $respuesta = false;
         $objVenta = new Venta($numV, $fech, $objCliente, $colcMotos, $precF);
-            if (count($colCodigosMoto)>0){
-                if ($objCliente->getEstado()==true){ 
-                    foreach($colCodigosMoto as $codigoMoto){
-                        $encontrado = $this->retornarMoto($codigoMoto);
-                        if($encontrado!=null){
-                            $moto = $objVenta->incorporarMoto($encontrado);
-                            if($moto>0){
-                                $respuesta = true;
-                                $importeFinal += $moto;
-                            }
+        if (count($colCodigosMoto)>0){
+            if ($objCliente->getEstado()==true){ 
+                foreach($colCodigosMoto as $codigoMoto){
+                    $encontrado = $this->retornarMoto($codigoMoto);
+                    if($encontrado!=null){
+                        $moto = $objVenta->incorporarMoto($encontrado);
+                        if($moto>0){
+                            $respuesta = true;
                         }
+                    }
                 }
                 if($respuesta == true){
                     $i = count($colecVen);
                     $colecVen[$i] = $objVenta;
                     $this->setColeccionVentasRealizadas($colecVen);
-                    $objVenta->setPrecioFinal($importeFinal);
                 }
-                
             }
         }
-        return $importeFinal;
+        return $objVenta->getPrecioFinal();
     }
     public function  informarSumaVentasNacionales(){
         $precioVentasRealizadas=0;
-        foreach($this->getColeccionVentasRealizadas() as $venta){
+        $colecVentas =  $this->getColeccionVentasRealizadas();
+        foreach($colecVentas as $venta){
             $precioVentasRealizadas += $venta->retornarTotalVentaNacional();
         }
         return $precioVentasRealizadas;
     }
     public function retornarMotosImportadas(){
         $colecMotosImportadas = [];
-        foreach ($this->getColeccionVentasRealizadas() as $venta){
+        $colecVentas =  $this->getColeccionVentasRealizadas();
+        foreach ($colecVentas as $venta){
             if(count($venta->retornarTotalVentaImportadas())>0){
-                $i = count($colecMotosImportadas);
-                $colecMotosImportadas[$i] = $venta->retornarTotalVentaImportadas();
+                $colecMotosImportadas[] = $venta;
             }
         }
         return $colecMotosImportadas;

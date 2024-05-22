@@ -4,8 +4,8 @@ class MotoImportada extends Moto{
     private $pais;
     private $impueto;
     
-    public function __construct($cod,$cost,$anio,$desc,$porc,$act,$tip,$pai,$impues){
-        parent:: __construct($cod,$cost,$anio,$desc,$porc,$act,$tip);
+    public function __construct($cod,$cost,$anio,$desc,$porc,$act,$pai,$impues){
+        parent:: __construct($cod,$cost,$anio,$desc,$porc,$act);
         $this->pais = $pai;
         $this->impueto = $impues;
     }
@@ -28,13 +28,10 @@ class MotoImportada extends Moto{
     }
     public function darPrecioVenta(){
         $precio = parent:: darPrecioVenta();
-        $precioVenta = 0;
         if ($precio != -1){
-            $precioVenta = $precio + $this->getImpuesto();
-        }else{
-            $precioVenta = $precio;
+            $precio = $precio + $this->getImpuesto();
         }
-        return $precioVenta;
+        return $precio;
     }
     
 }

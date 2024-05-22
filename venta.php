@@ -53,27 +53,22 @@ class Venta{
     }
     public function retornarTotalVentaNacional(){
         $precioColecMotosNacional =0;
-        if(count($this->getReferenciaColcMotos())>0){
-            foreach($this->getReferenciaColcMotos() as $objMoto){
-                if($objMoto->getTipo()=="nacional"){
-                    $objMoto->setActiva(true);//reactivamos la moto para que el metodo darPrecioVenta() funcione correctame
+        $colMotos = $this->getReferenciaColcMotos();
+            foreach($colMotos as $objMoto){
+                if($objMoto instanceof MotoNacional){
                     $precioColecMotosNacional += $objMoto->darPrecioVenta();
-                    $objMoto->setActiva(false);//ya que la moto ya fue comprada la volvemos a desactivar para que no se reutilice
                 }
             }
-        }
         return $precioColecMotosNacional;
     }
     public function retornarTotalVentaImportadas(){
         $colecMotosImportadas = [];
-        if(count($this->getReferenciaColcMotos())>0){
-            foreach($this->getReferenciaColcMotos() as $objMoto){
-                if($objMoto->getTipo()=="Importada"){
-                    $i = count($colecMotosImportadas);
-                    $colecMotosImportadas[$i]=$objMoto;
+        $colMotos = $this->getReferenciaColcMotos();
+            foreach( $colMotos as $objMoto){
+                if($objMoto instanceof MotoImportada){
+                   array_push($colecMotosImportadas, $objMoto);
                 }
             }
-        }
         return $colecMotosImportadas;
     }
     public function incorporarMoto($objMoto){
@@ -86,7 +81,6 @@ class Venta{
             $this->setReferenciaColcMotos($nuevaCol);
             $this->setPrecioFinal($precioF);
             $resp = $venta;
-            $objMoto->setActiva(false);
         }else{
             $resp = -1;
         }

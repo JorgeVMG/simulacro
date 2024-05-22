@@ -1,10 +1,10 @@
 <?php
 include_once "moto.php";
-class MotoNacionales extends Moto{
+class MotoNacional extends Moto{
     private $porcentajeDescuento;
-    public function __construct($cod,$cost,$anio,$desc,$porc,$act,$tip,$porcDesc){
-        parent:: __construct($cod,$cost,$anio,$desc,$porc,$act,$tip);
-        $this->porcentajeDescuento = $porcDesc;
+    public function __construct($cod,$cost,$anio,$desc,$porc,$act,$porcDesc){
+        parent:: __construct($cod,$cost,$anio,$desc,$porc,$act);
+        $this->porcentajeDescuento = $porcDesc ?? 15;
     }
     public function getPorcentajeDescuento(){
         return $this->porcentajeDescuento;
@@ -19,12 +19,9 @@ class MotoNacionales extends Moto{
     }
     public function darPrecioVenta(){
         $precio = parent:: darPrecioVenta();
-        $precioVenta = 0;
         if ($precio != -1){
-            $precioVenta = $precio - (($precio*$this->getPorcentajeDescuento())/100);
-        }else{
-            $precioVenta = $precio;
+            $precio = $precio - (($precio*$this->getPorcentajeDescuento())/100);
         }
-        return $precioVenta;
+        return $precio;
     }
 }
